@@ -1451,31 +1451,40 @@
   
   <!-- Widget Settings Script - Added from Thena file -->
   <script>
-    // Define widget configuration as a global variable so it persists across reloads
+    // Define widget configuration as a global variable with defaults to ensure it's initialized
     window.thenaWidget = {
-      // No default values - will be set by user through settings
+      // Default values that will be overridden if localStorage has values
+      baseUrl: 'https://thena-agent-studio.thena.tools',
+      apiKey: '',  // Will be overridden from localStorage if present
+      agentId: '', // Will be overridden from localStorage if present
+      wsEndpoint: 'wss://thena-agent-studio.thena.tools'
     };
     
     // Function to save widget settings to localStorage to persist across page reloads
     function saveWidgetSettings() {
       localStorage.setItem('thenaWidgetSettings', JSON.stringify(window.thenaWidget));
+      console.log('Saved widget settings to localStorage:', window.thenaWidget);
     }
     
     // Function to load widget settings from localStorage
     function loadWidgetSettings() {
       const savedSettings = localStorage.getItem('thenaWidgetSettings');
+      console.log('Loading settings from localStorage:', savedSettings);
+      
       if (savedSettings) {
         try {
           const settings = JSON.parse(savedSettings);
           window.thenaWidget = settings;
-          console.log('Loaded saved widget settings:', settings);
+          console.log('Successfully loaded widget settings:', settings);
         } catch (e) {
           console.error('Error loading saved widget settings:', e);
         }
+      } else {
+        console.log('No saved settings found in localStorage');
       }
     }
     
-    // Load settings on page load
+    // Load settings immediately
     loadWidgetSettings();
     
     // Show toast notification
@@ -1644,27 +1653,49 @@
   
   <!-- Load the widget script conditionally -->
   <script>
-    // Check if we have the required settings before loading the widget script
-    const hasValidSettings = window.thenaWidget && 
-                            window.thenaWidget.apiKey && 
-                            window.thenaWidget.agentId;
-    
-    // Only load the widget script if we have valid settings
-    if (hasValidSettings) {
-      const widgetScript = document.createElement('script');
-      widgetScript.src = 'https://widget.thena.tools/shim.js';
-      document.body.appendChild(widgetScript);
-    } else {
-      // If we don't have valid settings, show our custom widget button
-      console.log('No valid widget settings found. Showing configuration widget button.');
-      document.addEventListener('DOMContentLoaded', showConfigurationWidget);
-      // Also call it now in case DOM is already loaded
-      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    // Make sure this script runs after DOM is loaded to ensure localStorage has been checked
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, checking widget settings before loading widget');
+      
+      // Load settings again to ensure they're available
+      loadWidgetSettings();
+      
+      // Debug log the current widget settings
+      console.log('Widget settings before loading script:', {
+        widget: window.thenaWidget,
+        hasApiKey: window.thenaWidget?.apiKey,
+        hasAgentId: window.thenaWidget?.agentId,
+        fromLocalStorage: localStorage.getItem('thenaWidgetSettings')
+      });
+      
+      // Check if we have the required settings before loading the widget script
+      const hasValidSettings = window.thenaWidget && 
+                              window.thenaWidget.apiKey && 
+                              window.thenaWidget.agentId;
+      
+      console.log('hasValidSettings check result:', hasValidSettings);
+      
+      // Only load the widget script if we have valid settings
+      if (hasValidSettings) {
+        console.log('Loading widget script with settings:', window.thenaWidget);
+        const widgetScript = document.createElement('script');
+        widgetScript.src = 'https://widget.thena.tools/shim.js';
+        widgetScript.onload = function() {
+          console.log('Widget script loaded successfully');
+        };
+        widgetScript.onerror = function() {
+          console.error('Failed to load widget script');
+          showToast("Error loading chat widget. Please try again.");
+        };
+        document.body.appendChild(widgetScript);
+      } else {
+        // If we don't have valid settings, show our custom widget button
+        console.log('No valid widget settings found. Showing configuration widget button.');
         showConfigurationWidget();
       }
-    }
+    });
     
-    // Function to display our custom configuration widget button
+    // Function to display our custom configuration widget
     function showConfigurationWidget() {
       // Show the settings button
       showSettingsButton();
