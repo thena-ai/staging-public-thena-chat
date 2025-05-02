@@ -1452,13 +1452,14 @@
   <!-- Widget Settings Script - Added from Thena file -->
   <script>
     // Define widget configuration as a global variable so it persists across reloads
-    window.thenaWidget = {
-      // No default values - will be set by user through settings
-    };
+    // Initialize both potential config objects
+    window.thenaWidget = {};
+    window.thenaWidgetConfig = {};
     
     // Function to save widget settings to localStorage to persist across page reloads
     function saveWidgetSettings() {
-      localStorage.setItem('thenaWidgetSettings', JSON.stringify(window.thenaWidget));
+      // Save thenaWidgetConfig as it's potentially preferred by internal code
+      localStorage.setItem('thenaWidgetSettings', JSON.stringify(window.thenaWidgetConfig)); 
     }
     
     // Function to load widget settings from localStorage
@@ -1467,11 +1468,21 @@
       if (savedSettings) {
         try {
           const settings = JSON.parse(savedSettings);
+          // Set both configuration objects
           window.thenaWidget = settings;
-          console.log('Loaded saved widget settings:', settings);
+          window.thenaWidgetConfig = settings; 
+          console.log('Loaded saved widget settings into window.thenaWidget and window.thenaWidgetConfig:', settings);
         } catch (e) {
           console.error('Error loading saved widget settings:', e);
+          // Clear potentially corrupted settings
+          localStorage.removeItem('thenaWidgetSettings');
+          window.thenaWidget = {};
+          window.thenaWidgetConfig = {};
         }
+      } else {
+        // Ensure both are empty if nothing is saved
+        window.thenaWidget = {};
+        window.thenaWidgetConfig = {};
       }
     }
     
@@ -1588,28 +1599,25 @@
         const userName = document.getElementById('user-name').value.trim();
         const hmacSecret = document.getElementById('hmac-secret').value.trim();
         
-        // Update thenaWidget configuration
-        window.thenaWidget.agentId = agentId;
-        window.thenaWidget.apiKey = apiKey;
-        window.thenaWidget.baseUrl = baseUrl;
-        window.thenaWidget.wsEndpoint = wsEndpoint;
-        
+        // Prepare the settings object
+        const currentConfig = {
+          agentId: agentId,
+          apiKey: apiKey,
+          baseUrl: baseUrl,
+          wsEndpoint: wsEndpoint,
+          user: undefined // Initialize user object
+        };
+
         // If user authentication is provided
         if (userEmail && userName && hmacSecret) {
-          // Create message payload for HMAC (email:name)
           const messagePayload = `${userEmail}:${userName}`;
-          
           try {
-            // Generate HMAC hash
             const hash = await generateHMAC(hmacSecret, messagePayload);
-            
-            // Set user details with hash
-            window.thenaWidget.user = {
+            currentConfig.user = {
               email: userEmail,
               name: userName,
               hash: hash
             };
-            
             console.log("User authenticated with HMAC hash:", hash);
           } catch (error) {
             console.error("Error generating HMAC:", error);
@@ -1617,18 +1625,24 @@
             return;
           }
         } else if (userEmail || userName) {
-          // Set user details without hash (anonymous)
-          window.thenaWidget.user = {
+          currentConfig.user = {
             email: userEmail,
             name: userName
           };
         }
-        
+
+        // Update both window configuration objects
+        window.thenaWidget = { ...currentConfig }; 
+        window.thenaWidgetConfig = { ...currentConfig };
+
+        console.log("Updated window.thenaWidget:", window.thenaWidget);
+        console.log("Updated window.thenaWidgetConfig:", window.thenaWidgetConfig);
+
         // Close the modal
         modal.style.display = 'none';
         
-        // Save settings to localStorage
-        saveWidgetSettings();
+        // Save settings to localStorage (will save window.thenaWidgetConfig)
+        saveWidgetSettings(); 
         
         // Show toast
         showToast("Settings saved! Reloading widget...");
@@ -1645,12 +1659,21 @@
   <!-- Load the widget script conditionally -->
   <script>
     // Check if we have the required settings before loading the widget script
-    const hasValidSettings = window.thenaWidget && 
-                            window.thenaWidget.apiKey && 
-                            window.thenaWidget.agentId;
+    // Check thenaWidgetConfig as it's the one we're saving/prioritizing
+    const hasValidSettings = window.thenaWidgetConfig && 
+                            window.thenaWidgetConfig.apiKey && 
+                            window.thenaWidgetConfig.agentId;
     
+    console.log('Checking for valid settings:', { 
+      hasConfig: !!window.thenaWidgetConfig, 
+      hasApiKey: !!window.thenaWidgetConfig?.apiKey, 
+      hasAgentId: !!window.thenaWidgetConfig?.agentId,
+      isValid: hasValidSettings 
+    });
+
     // Only load the widget script if we have valid settings
     if (hasValidSettings) {
+      console.log('Valid settings found. Loading widget script (shim.js)...');
       const widgetScript = document.createElement('script');
       widgetScript.src = 'https://widget.thena.tools/shim.js';
       document.body.appendChild(widgetScript);
