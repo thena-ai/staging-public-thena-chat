@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexus | Enterprise Dashboard</title>
+  <title>Nexus | Div-based Widget Test</title>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,13 +12,6 @@
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Chart.js plugin for curved lines -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-style@latest/dist/chartjs-plugin-style.min.js"></script>
-  <!-- Chart.js plugin for center text in doughnut -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-doughnutlabel@2.0.3/dist/chartjs-plugin-doughnutlabel.min.js"></script>
   
   <style>
     :root {
@@ -36,9 +29,6 @@
       --success: #10B981;
       --warning: #F59E0B;
       --danger: #EF4444;
-      
-      /* Add custom widget styles */
-      --widget-button-size: 56px;
       
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
@@ -182,6 +172,8 @@
       flex: 1;
       margin-left: 240px;
       padding: 2rem;
+      display: flex;
+      flex-direction: column;
     }
     
     .header {
@@ -204,36 +196,6 @@
       gap: 1rem;
     }
     
-    .search-bar {
-      position: relative;
-    }
-    
-    .search-input {
-      padding: 0.5rem 1rem 0.5rem 2.25rem;
-      border: 1px solid var(--light-gray);
-      border-radius: var(--border-radius);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      width: 240px;
-      transition: var(--transition);
-      background-color: var(--white);
-    }
-    
-    .search-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(93, 95, 239, 0.1);
-    }
-    
-    .search-icon {
-      position: absolute;
-      left: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-      font-size: 0.875rem;
-    }
-    
     .setup-button {
       background-color: var(--primary);
       color: white;
@@ -253,430 +215,67 @@
       background-color: var(--primary-dark);
     }
     
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      cursor: pointer;
-    }
-    
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
-      margin-right: 0.75rem;
-    }
-    
-    .user-info {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .user-name {
-      font-weight: 500;
-      font-size: 0.875rem;
-    }
-    
-    .user-role {
-      font-size: 0.75rem;
-      color: var(--gray);
-    }
-    
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 1rem;
-    }
-    
-    .card {
-      background-color: var(--white);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow-sm);
-      padding: 1.25rem;
-      transition: var(--transition);
-      border: 1px solid var(--light-gray);
-    }
-    
-    .card:hover {
-      box-shadow: var(--shadow-md);
-    }
-    
-    .card-sm {
-      grid-column: span 4;
-    }
-    
-    .card-md {
-      grid-column: span 6;
-    }
-    
-    .card-lg {
-      grid-column: span 8;
-    }
-    
-    .card-full {
-      grid-column: span 12;
-    }
-    
-    .stat-card {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .stat-title {
-      font-size: 0.875rem;
-      color: var(--gray);
-      margin-bottom: 0.5rem;
-    }
-    
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.02em;
-    }
-    
-    .stat-change {
-      display: flex;
-      align-items: center;
-      font-size: 0.8125rem;
-    }
-    
-    .stat-change.positive {
-      color: var(--success);
-    }
-    
-    .stat-change.negative {
-      color: var(--danger);
-    }
-    
-    .stat-icon {
-      margin-right: 0.25rem;
-    }
-    
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.25rem;
-    }
-    
-    .card-title {
-      font-size: 0.9375rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-    
-    .card-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-    
-    .card-action {
-      background: none;
-      border: none;
-      color: var(--gray);
-      cursor: pointer;
-      transition: var(--transition);
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--border-radius);
-    }
-    
-    .card-action:hover {
-      background-color: var(--lighter-gray);
-      color: var(--dark);
-    }
-    
-    .chart-container {
-      width: 100%;
-      height: 250px;
-      position: relative;
-    }
-    
-    .chart-info {
-      display: flex;
-      flex-direction: column;
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--light-gray);
-    }
-    
-    .chart-trend {
-      display: flex;
-      align-items: center;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--success);
-      margin-bottom: 0.25rem;
-    }
-    
-    .chart-trend i {
-      margin-right: 0.25rem;
-    }
-    
-    .chart-period {
-      font-size: 0.75rem;
-      color: var(--gray);
-    }
-    
-    .table-container {
-      width: 100%;
-      overflow-x: auto;
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    th {
-      text-align: left;
-      padding: 0.75rem 1rem;
-      font-weight: 500;
-      color: var(--gray);
-      border-bottom: 1px solid var(--light-gray);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    
-    td {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--light-gray);
-      font-size: 0.875rem;
-    }
-    
-    tr:last-child td {
-      border-bottom: none;
-    }
-    
-    .status {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.25rem 0.625rem;
-      border-radius: 1rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    
-    .status.active {
-      background-color: rgba(16, 185, 129, 0.1);
-      color: var(--success);
-    }
-    
-    .status.pending {
-      background-color: rgba(245, 158, 11, 0.1);
-      color: var(--warning);
-    }
-    
-    .status.inactive {
-      background-color: rgba(239, 68, 68, 0.1);
-      color: var(--danger);
-    }
-    
-    .progress-container {
-      width: 100%;
-      height: 6px;
-      background-color: var(--light-gray);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(to right, var(--primary), var(--secondary));
-      border-radius: 3px;
-    }
-    
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.125rem 0.5rem;
-      border-radius: var(--border-radius);
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    
-    .badge-primary {
-      background-color: rgba(93, 95, 239, 0.1);
-      color: var(--primary);
-    }
-    
-    .badge-secondary {
-      background-color: rgba(56, 189, 248, 0.1);
-      color: var(--secondary);
-    }
-    
-    .badge-accent {
-      background-color: rgba(244, 114, 182, 0.1);
-      color: var(--accent);
-    }
-    
-    .badge-success {
-      background-color: rgba(16, 185, 129, 0.1);
-      color: var(--success);
-    }
-    
-    .badge-warning {
-      background-color: rgba(245, 158, 11, 0.1);
-      color: var(--warning);
-    }
-    
-    .badge-danger {
-      background-color: rgba(239, 68, 68, 0.1);
-      color: var(--danger);
-    }
-    
-    .banner {
-      grid-column: span 12;
-      background: linear-gradient(to right, #4361ee, #38bdf8);
-      color: white;
-      border-radius: var(--border-radius);
-      padding: 0.75rem 1.25rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .banner-content {
-      display: flex;
-      align-items: center;
-    }
-    
-    .banner-icon {
-      margin-right: 0.75rem;
-      font-size: 1rem;
-    }
-    
-    .banner-text {
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-    
-    .banner-action {
-      background-color: rgba(255, 255, 255, 0.15);
-      color: white;
-      border: none;
-      padding: 0.375rem 0.75rem;
-      border-radius: var(--border-radius);
-      font-size: 0.75rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    
-    .banner-action:hover {
-      background-color: rgba(255, 255, 255, 0.25);
-    }
-    
-    .user-activity-card {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid var(--light-gray);
-    }
-    
-    .user-activity-card:last-child {
-      border-bottom: none;
-    }
-    
-    .user-avatar-sm {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
-      margin-right: 0.75rem;
-    }
-    
-    .user-activity-content {
-      flex: 1;
-    }
-    
-    .user-activity-name {
-      font-size: 0.875rem;
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-    }
-    
-    .user-activity-action {
-      font-size: 0.75rem;
-      color: var(--gray);
-    }
-    
-    .user-activity-time {
-      font-size: 0.75rem;
-      color: var(--gray);
-      flex-shrink: 0;
-    }
-    
-    .user-metrics {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
-    }
-    
-    .user-metric {
-      text-align: center;
-    }
-    
-    .user-metric-value {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-    
-    .user-metric-label {
-      font-size: 0.75rem;
-      color: var(--gray);
-    }
-    
-    /* Responsive */
-    @media (max-width: 1200px) {
-      .card-sm {
-        grid-column: span 4;
-      }
-      
-      .card-md {
-        grid-column: span 6;
-      }
-      
-      .card-lg {
-        grid-column: span 12;
-      }
-    }
-    
-    @media (max-width: 992px) {
-      .card-sm {
-        grid-column: span 6;
-      }
-      
-      .card-md {
-        grid-column: span 12;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      .sidebar {
-        transform: translateX(-100%);
-      }
-      
-      .main-content {
-        margin-left: 0;
-      }
-      
-      .card-sm {
-        grid-column: span 12;
-      }
-    }
-    
+    .widget-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        padding: 2rem;
+    }
+    #my-thena-widget {
+        width: 380px;
+        height: 600px;
+        border-radius: 6px;
+        border: 1px solid var(--light-gray);
+        background-color: var(--white);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Ensure widget content stays within bounds - more specific selectors */
+    #my-thena-widget > * {
+        max-width: 100% !important;
+        max-height: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    /* Target iframe specifically */
+    #my-thena-widget iframe {
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        border-radius: 6px !important;
+        display: block !important;
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Target any divs that might be created by the widget */
+    #my-thena-widget > div {
+        width: 100% !important;
+        height: 100% !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    /* Prevent any absolute positioning from breaking out */
+    #my-thena-widget [style*="position: absolute"],
+    #my-thena-widget [style*="position: fixed"] {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+    }
+
     /* Toast notification */
     .toast {
       position: fixed;
@@ -697,31 +296,6 @@
     .toast.show {
       opacity: 1;
       transform: translate(-50%, -10px);
-    }
-    
-    /* Widget button styles */
-    #thena-settings-button {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      width: var(--widget-button-size);
-      height: var(--widget-button-size);
-      border-radius: 5%;
-      background: var(--primary);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.25);
-      z-index: 999;
-      font-size: 24px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    #thena-settings-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(67, 97, 238, 0.3);
     }
     
     /* Modal Styles for Widget Settings - Added from Thena file */
@@ -814,23 +388,6 @@
       margin-top: 24px;
     }
     
-    .setup-button {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    
-    .setup-button:hover {
-      background-color: var(--primary-dark);
-    }
-    
     .theme-preset {
       border: none;
       padding: 6px 12px;
@@ -862,60 +419,14 @@
       
       <div class="nav-section">
         <div class="nav-section-title">Overview</div>
-        <a href="#" class="nav-item active">
+        <a href="dashboard-2.html" class="nav-item">
           <i class="nav-icon fas fa-th-large"></i>
-          Dashboard
+          Floating Widget
         </a>
-        <a href="#" class="nav-item">
-          <i class="nav-icon fas fa-chart-line"></i>
-          Analytics
-        </a>
-        <a href="#" class="nav-item">
-          <i class="nav-icon fas fa-bolt"></i>
-          Activity
-        </a>
-      </div>
-      
-      <div class="nav-section">
-        <div class="nav-section-title">Workspace</div>
-        <a href="#" class="nav-item">
-          <i class="nav-icon fas fa-code-branch"></i>
-          Projects
-        </a>
-        <a href="#" class="nav-item">
-          <i class="nav-icon fas fa-tasks"></i>
-          Issues
-        </a>
-        <a href="#" class="nav-item">
-          <i class="nav-icon fas fa-users"></i>
-          Team
-        </a>
-        <a href="#" class="nav-item">
-          <i class="nav-icon fas fa-database"></i>
-          Resources
-        </a>
-      </div>
-      
-      <div class="nav-section">
-        <div class="nav-section-title">Account</div>
-        <a href="#" class="nav-item">
-          <i class="nav-icon fas fa-cog"></i>
-          Settings
-        </a>
-        <a href="#" class="nav-item">
-          <i class="nav-icon fas fa-question-circle"></i>
-          Help
-        </a>
-      </div>
-    </div>
-    
-    <div class="sidebar-bottom">
-      <div class="user-menu">
-        <div class="user-avatar" style="background-image: url('https://randomuser.me/api/portraits/men/32.jpg'); background-size: cover;"></div>
-        <div class="user-info">
-          <div class="user-name">Alex Rivera</div>
-          <div class="user-role">Admin</div>
-        </div>
+        <a href="dashboard-element.html" class="nav-item active">
+            <i class="nav-icon fas fa-th-large"></i>
+            Embedded Widget
+          </a>
       </div>
     </div>
   </aside>
@@ -923,14 +434,9 @@
   <!-- Main Content -->
   <main class="main-content">
     <header class="header">
-      <h1 class="page-title">Dashboard</h1>
+      <h1 class="page-title">Embedded Widget Test</h1>
       
       <div class="header-actions">
-        <div class="search-bar">
-          <i class="search-icon fas fa-search"></i>
-          <input type="text" class="search-input" placeholder="Search...">
-        </div>
-        
         <button class="setup-button" id="widget-settings-btn">
           <i class="fas fa-comment-dots"></i>
           Setup chat widget
@@ -938,237 +444,12 @@
       </div>
     </header>
     
-    <div class="dashboard-grid">
-      <!-- Banner -->
-      <div class="banner">
-        <div class="banner-content">
-          <i class="banner-icon fas fa-bolt"></i>
-          <div class="banner-text">New dashboard features are now available — check out the latest improvements</div>
-        </div>
-        <button class="banner-action">Explore</button>
-      </div>
-      
-      <!-- Stat Cards -->
-      <div class="card card-sm stat-card">
-        <div class="stat-title">Total deployments</div>
-        <div class="stat-value">1,284</div>
-        <div class="stat-change positive">
-          <i class="stat-icon fas fa-arrow-up"></i>
-          12.5% from last month
-        </div>
-      </div>
-      
-      <div class="card card-sm stat-card">
-        <div class="stat-title">Success rate</div>
-        <div class="stat-value">98.7%</div>
-        <div class="stat-change positive">
-          <i class="stat-icon fas fa-arrow-up"></i>
-          1.2% from last month
-        </div>
-      </div>
-      
-      <div class="card card-sm stat-card">
-        <div class="stat-title">Avg. response time</div>
-        <div class="stat-value">42ms</div>
-        <div class="stat-change positive">
-          <i class="stat-icon fas fa-arrow-down"></i>
-          8ms from last month
-        </div>
-      </div>
-      
-      <!-- Area Chart -->
-      <div class="card card-lg">
-        <div class="card-header">
-          <h3 class="card-title">System performance</h3>
-          <div class="card-actions">
-            <button class="card-action"><i class="fas fa-ellipsis-v"></i></button>
-          </div>
-        </div>
-        <div class="chart-container">
-          <canvas id="performanceChart"></canvas>
-        </div>
-        <div class="chart-info">
-          <div class="chart-trend">
-            <i class="fas fa-arrow-up"></i> Trending up by 5.2% this month
-          </div>
-          <div class="chart-period">January - June 2025</div>
-        </div>
-      </div>
-      
-      <!-- Donut Chart -->
-      <div class="card card-sm">
-        <div class="card-header">
-          <h3 class="card-title">Resource usage</h3>
-          <div class="card-actions">
-            <button class="card-action"><i class="fas fa-ellipsis-v"></i></button>
-          </div>
-        </div>
-        <div class="chart-container">
-          <canvas id="resourceUsageChart"></canvas>
-        </div>
-        <div class="chart-info">
-          <div class="chart-trend">
-            <i class="fas fa-arrow-up"></i> Trending up by 5.2% this month
-          </div>
-          <div class="chart-period">January - June 2025</div>
-        </div>
-      </div>
-      
-      <!-- Bar Chart -->
-      <div class="card card-md">
-        <div class="card-header">
-          <h3 class="card-title">API requests by endpoint</h3>
-          <div class="card-actions">
-            <button class="card-action"><i class="fas fa-ellipsis-v"></i></button>
-          </div>
-        </div>
-        <div class="chart-container">
-          <canvas id="apiRequestsChart"></canvas>
-        </div>
-        <div class="chart-info">
-          <div class="chart-trend">
-            <i class="fas fa-arrow-up"></i> Trending up by 5.2% this month
-          </div>
-          <div class="chart-period">Showing total requests for the last 6 months</div>
-        </div>
-      </div>
-      
-      <!-- User Activity Card -->
-      <div class="card card-md">
-        <div class="card-header">
-          <h3 class="card-title">User activity</h3>
-          <div class="card-actions">
-            <button class="card-action"><i class="fas fa-ellipsis-v"></i></button>
-          </div>
-        </div>
-        
-        <div class="user-metrics">
-          <div class="user-metric">
-            <div class="user-metric-value">847</div>
-            <div class="user-metric-label">Active users</div>
-          </div>
-          <div class="user-metric">
-            <div class="user-metric-value">+12.4%</div>
-            <div class="user-metric-label">Growth</div>
-          </div>
-          <div class="user-metric">
-            <div class="user-metric-value">24.8m</div>
-            <div class="user-metric-label">Session time</div>
-          </div>
-        </div>
-        
-        <div class="user-activity-card">
-          <div class="user-avatar-sm" style="background-image: url('https://randomuser.me/api/portraits/women/32.jpg');"></div>
-          <div class="user-activity-content">
-            <div class="user-activity-name">Jamie Chen</div>
-            <div class="user-activity-action">Deployed API Gateway to production</div>
-          </div>
-          <div class="user-activity-time">10m ago</div>
-        </div>
-        
-        <div class="user-activity-card">
-          <div class="user-avatar-sm" style="background-image: url('https://randomuser.me/api/portraits/men/45.jpg');"></div>
-          <div class="user-activity-content">
-            <div class="user-activity-name">Taylor Kim</div>
-            <div class="user-activity-action">Updated Auth Service configuration</div>
-          </div>
-          <div class="user-activity-time">32m ago</div>
-        </div>
-        
-        <div class="user-activity-card">
-          <div class="user-avatar-sm" style="background-image: url('https://randomuser.me/api/portraits/women/68.jpg');"></div>
-          <div class="user-activity-content">
-            <div class="user-activity-name">Morgan Smith</div>
-            <div class="user-activity-action">Created new project: Frontend App</div>
-          </div>
-          <div class="user-activity-time">1h ago</div>
-        </div>
-        
-        <div class="user-activity-card">
-          <div class="user-avatar-sm" style="background-image: url('https://randomuser.me/api/portraits/men/22.jpg');"></div>
-          <div class="user-activity-content">
-            <div class="user-activity-name">Casey Jones</div>
-            <div class="user-activity-action">Started database migration on staging</div>
-          </div>
-          <div class="user-activity-time">2h ago</div>
-        </div>
-      </div>
-      
-      <!-- Recent Deployments Table -->
-      <div class="card card-full">
-        <div class="card-header">
-          <h3 class="card-title">Recent deployments</h3>
-          <div class="card-actions">
-            <button class="card-action"><i class="fas fa-ellipsis-v"></i></button>
-          </div>
-        </div>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Project</th>
-                <th>Environment</th>
-                <th>Deployed by</th>
-                <th>Time</th>
-                <th>Duration</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>#NX-5842</td>
-                <td>API Gateway</td>
-                <td><span class="badge badge-primary">Production</span></td>
-                <td>Jamie Chen</td>
-                <td>Today, 10:23 AM</td>
-                <td>45s</td>
-                <td><span class="status active">Success</span></td>
-              </tr>
-              <tr>
-                <td>#NX-5841</td>
-                <td>Auth Service</td>
-                <td><span class="badge badge-secondary">Staging</span></td>
-                <td>Taylor Kim</td>
-                <td>Today, 9:45 AM</td>
-                <td>1m 12s</td>
-                <td><span class="status active">Success</span></td>
-              </tr>
-              <tr>
-                <td>#NX-5840</td>
-                <td>Frontend App</td>
-                <td><span class="badge badge-primary">Production</span></td>
-                <td>Morgan Smith</td>
-                <td>Today, 9:12 AM</td>
-                <td>2m 08s</td>
-                <td><span class="status pending">In Progress</span></td>
-              </tr>
-              <tr>
-                <td>#NX-5839</td>
-                <td>Database Migration</td>
-                <td><span class="badge badge-secondary">Staging</span></td>
-                <td>Casey Jones</td>
-                <td>Yesterday, 4:30 PM</td>
-                <td>3m 47s</td>
-                <td><span class="status active">Success</span></td>
-              </tr>
-              <tr>
-                <td>#NX-5838</td>
-                <td>Analytics Service</td>
-                <td><span class="badge badge-primary">Production</span></td>
-                <td>Riley Wilson</td>
-                <td>Yesterday, 3:15 PM</td>
-                <td>1m 23s</td>
-                <td><span class="status inactive">Failed</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="widget-container">
+        <div id="my-thena-widget"></div>
     </div>
   </main>
   
-  <!-- Widget Settings Modal - Added from Thena file -->
+  <!-- Widget Settings Modal -->
   <div id="widget-settings-modal" class="modal">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
@@ -1203,34 +484,57 @@
           <input type="text" id="hmac-secret" placeholder="Enter HMAC secret">
         </div>
         <div class="form-group">
-          <label for="theme-color">Theme Color (hex code)</label>
-          <input type="text" id="theme-color" placeholder="e.g., #ff6b35" pattern="^#[A-Fa-f0-9]{6}$">
-          <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
-            <button type="button" class="theme-preset" data-color="#4361ee" style="background: #4361ee;">Blue</button>
-            <button type="button" class="theme-preset" data-color="#ff6b35" style="background: #ff6b35;">Orange</button>
-            <button type="button" class="theme-preset" data-color="#10b981" style="background: #10b981;">Green</button>
-            <button type="button" class="theme-preset" data-color="#8b5cf6" style="background: #8b5cf6;">Purple</button>
-            <button type="button" class="theme-preset" data-color="#f59e0b" style="background: #f59e0b;">Yellow</button>
-            <button type="button" class="theme-preset" data-color="#ef4444" style="background: #ef4444;">Red</button>
-          </div>
-          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
-            Enter a hex color to customize the widget theme or click a preset. Leave empty for default blue theme.
-          </small>
+            <label for="theme-color-start">Theme Color Start (hex code)</label>
+            <input type="text" id="theme-color-start" placeholder="e.g., #ff6b35" pattern="^#[A-Fa-f0-9]{6}$">
+            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+              Starting color for gradient theme. Leave empty for default.
+            </small>
         </div>
         <div class="form-group">
-          <label for="brand-logo-url">Brand Logo URL</label>
-          <input type="url" id="brand-logo-url" placeholder="e.g., https://example.com/logo.png">
-          <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
-            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/0/02/SVG_logo.svg" style="background: #4361ee;">SVG</button>
-            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/64px-React-icon.svg.png" style="background: #ff6b35;">PNG</button>
-            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/64px-Python-logo-notext.svg.jpg" style="background: #10b981;">JPG</button>
-            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/64px-HTML5_logo_and_wordmark.svg.jpeg" style="background: #f59e0b;">JPEG</button>
-            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/CSS3_logo_and_wordmark.svg/64px-CSS3_logo_and_wordmark.svg.webp" style="background: #8b5cf6;">WebP</button>
-            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Typescript_logo_2020.svg/48px-Typescript_logo_2020.svg.png" style="background: #61dafb;">Small PNG</button>
-          </div>
-          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
-            Enter a public URL to your brand logo (supports SVG, PNG, JPG, JPEG, WebP). Leave empty to use default Thena logo.
-          </small>
+            <label for="theme-color-end">Theme Color End (hex code)</label>
+            <input type="text" id="theme-color-end" placeholder="e.g., #0000ff" pattern="^#[A-Fa-f0-9]{6}$">
+            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+              Ending color for gradient theme. Leave empty for default.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="gradient-direction">Gradient Direction</label>
+            <input type="text" id="gradient-direction" placeholder="e.g., to right, 45deg" value="to right">
+            <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+              <button type="button" class="theme-preset" data-gradient="to right" style="background: linear-gradient(to right, #4361ee, #38bdf8);">Right</button>
+              <button type="button" class="theme-preset" data-gradient="to bottom" style="background: linear-gradient(to bottom, #4361ee, #38bdf8);">Down</button>
+              <button type="button" class="theme-preset" data-gradient="45deg" style="background: linear-gradient(45deg, #4361ee, #38bdf8);">45°</button>
+              <button type="button" class="theme-preset" data-gradient="135deg" style="background: linear-gradient(135deg, #4361ee, #38bdf8);">135°</button>
+            </div>
+            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+              CSS gradient direction (e.g., "to right", "45deg"). Default is "to right".
+            </small>
+        </div>
+        <div class="form-group">
+            <label>Theme Presets</label>
+            <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+              <button type="button" class="theme-preset" data-start="#4361ee" data-end="#38bdf8" style="background: linear-gradient(to right, #4361ee, #38bdf8);">Blue Ocean</button>
+              <button type="button" class="theme-preset" data-start="#ff6b35" data-end="#f7931e" style="background: linear-gradient(to right, #ff6b35, #f7931e);">Orange Sunset</button>
+              <button type="button" class="theme-preset" data-start="#10b981" data-end="#059669" style="background: linear-gradient(to right, #10b981, #059669);">Green Forest</button>
+              <button type="button" class="theme-preset" data-start="#8b5cf6" data-end="#a855f7" style="background: linear-gradient(to right, #8b5cf6, #a855f7);">Purple Magic</button>
+              <button type="button" class="theme-preset" data-start="#f59e0b" data-end="#d97706" style="background: linear-gradient(to right, #f59e0b, #d97706);">Golden Hour</button>
+              <button type="button" class="theme-preset" data-start="#ef4444" data-end="#dc2626" style="background: linear-gradient(to right, #ef4444, #dc2626);">Red Fire</button>
+            </div>
+            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+              Click a preset to apply gradient colors. You can then customize individual colors and direction above.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="brand-logo-url">Brand Logo URL</label>
+            <input type="url" id="brand-logo-url" placeholder="e.g., https://example.com/logo.png">
+            <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+              <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/0/02/SVG_logo.svg" style="background: #4361ee;">SVG</button>
+              <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/64px-React-icon.svg.png" style="background: #ff6b35;">PNG</button>
+              <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/64px-Python-logo-notext.svg.jpg" style="background: #10b981;">JPG</button>
+            </div>
+            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+              Enter a public URL to your brand logo (supports SVG, PNG, JPG). Leave empty to use default.
+            </small>
         </div>
         <div class="modal-buttons">
           <button type="submit" class="setup-button">Save settings</button>
@@ -1239,300 +543,34 @@
     </div>
   </div>
 
-  <!-- Thena Web Chat Widget Container -->
-  <div id="thena-widget-container"></div>
-  
-  <script>
-    // Initialize charts when the DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-      Chart.defaults.font.family = "'Inter', sans-serif";
-      Chart.defaults.color = "#6B7280";
-      Chart.defaults.scale.grid.drawBorder = false;
-      
-      // Performance Chart - Area Chart
-      const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-      const performanceChart = new Chart(performanceCtx, {
-        type: 'line',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          datasets: [
-            {
-              label: 'Response time',
-              data: [68, 53, 78, 45, 63, 55],
-              borderColor: '#4361ee',
-              backgroundColor: (context) => {
-                const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, context.chart.height);
-                gradient.addColorStop(0, 'rgba(67, 97, 238, 0.3)');
-                gradient.addColorStop(1, 'rgba(67, 97, 238, 0)');
-                return gradient;
-              },
-              tension: 0.4,
-              fill: true,
-              borderWidth: 2,
-              pointRadius: 0,
-              pointHoverRadius: 0
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: {
-            mode: 'nearest',
-            intersect: false,
-            axis: 'x'
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              backgroundColor: 'rgba(17, 24, 39, 0.8)',
-              padding: 12,
-              titleFont: {
-                size: 13
-              },
-              bodyFont: {
-                size: 12
-              },
-              cornerRadius: 4,
-              displayColors: false
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              grid: {
-                color: 'rgba(0, 0, 0, 0.03)',
-                drawBorder: false
-              },
-              ticks: {
-                padding: 10,
-                display: false
-              },
-              border: {
-                display: false
-              }
-            },
-            x: {
-              grid: {
-                display: false
-              },
-              ticks: {
-                padding: 10
-              },
-              border: {
-                display: false
-              }
-            }
-          },
-          elements: {
-            line: {
-              borderJoinStyle: 'round'
-            }
-          }
-        }
-      });
-      
-      // Resource Usage Chart - Donut with center text
-      const resourceUsageCtx = document.getElementById('resourceUsageChart').getContext('2d');
-      const resourceUsageChart = new Chart(resourceUsageCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Compute', 'Database', 'Storage', 'Network'],
-          datasets: [{
-            data: [1125, 634, 580, 720],
-            backgroundColor: [
-              '#4361ee',
-              '#7b9fff',
-              '#a3c4f3',
-              '#cfddff'
-            ],
-            borderWidth: 0,
-            hoverOffset: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '75%',
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              backgroundColor: 'rgba(17, 24, 39, 0.8)',
-              padding: 12,
-              titleFont: {
-                size: 13
-              },
-              bodyFont: {
-                size: 12
-              },
-              cornerRadius: 4,
-              displayColors: false
-            }
-          },
-          elements: {
-            arc: {
-              borderWidth: 0
-            }
-          }
-        },
-        plugins: [{
-          id: 'centerText',
-          beforeDraw: function(chart) {
-            const width = chart.width;
-            const height = chart.height;
-            const ctx = chart.ctx;
-            
-            ctx.restore();
-            
-            // Value text
-            const fontSize = (height / 200).toFixed(2) * 24;
-            ctx.font = `600 ${fontSize}px Inter`;
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#111827';
-            
-            const text = '3,059';
-            const textX = width / 2;
-            const textY = height / 2 - fontSize / 4;
-            ctx.textAlign = 'center';
-            ctx.fillText(text, textX, textY);
-            
-            // Label text
-            const labelFontSize = (height / 200).toFixed(2) * 10;
-            ctx.font = `400 ${labelFontSize}px Inter`;
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#6B7280';
-            
-            const labelText = 'Total resources';
-            const labelTextX = width / 2;
-            const labelTextY = height / 2 + fontSize / 2;
-            ctx.textAlign = 'center';
-            ctx.fillText(labelText, labelTextX, labelTextY);
-            
-            ctx.save();
-          }
-        }]
-      });
-      
-      // API Requests Chart - Bar Chart
-      const apiRequestsCtx = document.getElementById('apiRequestsChart').getContext('2d');
-      const apiRequestsChart = new Chart(apiRequestsCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          datasets: [
-            {
-              label: 'API calls',
-              data: [120, 90, 150, 85, 130, 110],
-              backgroundColor: '#4361ee',
-              borderRadius: 4,
-              borderSkipped: false,
-              barPercentage: 0.5,
-              categoryPercentage: 0.7
-            },
-            {
-              label: 'Data transfers',
-              data: [70, 120, 90, 60, 110, 80],
-              backgroundColor: '#a3c4f3',
-              borderRadius: 4,
-              borderSkipped: false,
-              barPercentage: 0.5,
-              categoryPercentage: 0.7
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              backgroundColor: 'rgba(17, 24, 39, 0.8)',
-              padding: 12,
-              titleFont: {
-                size: 13
-              },
-              bodyFont: {
-                size: 12
-              },
-              cornerRadius: 4,
-              displayColors: false
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              grid: {
-                color: 'rgba(0, 0, 0, 0.03)',
-                drawBorder: false
-              },
-              ticks: {
-                padding: 10,
-                display: false
-              },
-              border: {
-                display: false
-              }
-            },
-            x: {
-              grid: {
-                display: false
-              },
-              ticks: {
-                padding: 10
-              },
-              border: {
-                display: false
-              }
-            }
-          }
-        }
-      });
-    });
-  </script>
-  
-  <!-- Widget Settings Script - Added from Thena file -->
+  <!-- Thena Web Chat Widget Container is now part of main content -->
+
   <script>
     // Define widget configuration as a global variable so it persists across reloads
-    // Initialize both potential config objects
-    window.thenaWidget = {};
-    window.thenaWidgetConfig = {};
+    window.thenaWidget = {
+      // No default values - will be set by user through settings
+    };
     
     // Function to save widget settings to localStorage to persist across page reloads
     function saveWidgetSettings() {
-      // Save thenaWidgetConfig as it's potentially preferred by internal code
-      localStorage.setItem('thenaWidgetSettings', JSON.stringify(window.thenaWidgetConfig)); 
+      localStorage.setItem('thenaWidgetSettings_element', JSON.stringify(window.thenaWidget));
     }
-    
+
     // Function to load widget settings from localStorage
     function loadWidgetSettings() {
-      const savedSettings = localStorage.getItem('thenaWidgetSettings');
+      const savedSettings = localStorage.getItem('thenaWidgetSettings_element');
       if (savedSettings) {
         try {
           const settings = JSON.parse(savedSettings);
-          // Set both configuration objects
           window.thenaWidget = settings;
-          window.thenaWidgetConfig = settings; 
-          console.log('Loaded saved widget settings into window.thenaWidget and window.thenaWidgetConfig:', settings);
+          // IMPORTANT: Also set window.thenaWidgetConfig which is what the widget actually uses
+          window.thenaWidgetConfig = { ...settings };
         } catch (e) {
           console.error('Error loading saved widget settings:', e);
-          // Clear potentially corrupted settings
-          localStorage.removeItem('thenaWidgetSettings');
-          window.thenaWidget = {};
-          window.thenaWidgetConfig = {};
         }
-      } else {
-        // Ensure both are empty if nothing is saved
-        window.thenaWidget = {};
-        window.thenaWidgetConfig = {};
-      }
+      } 
     }
-    
+
     // Load settings on page load
     loadWidgetSettings();
     
@@ -1543,25 +581,23 @@
       toast.textContent = message;
       document.body.appendChild(toast);
       
-      // Trigger reflow to enable transition
       void toast.offsetWidth;
       toast.classList.add('show');
       
       setTimeout(function() {
         toast.classList.remove('show');
         setTimeout(function() {
-          document.body.removeChild(toast);
+              document.body.removeChild(toast);
         }, 300);
       }, 3000);
     }
-    
+
     // Generate HMAC-SHA256 using Web Crypto API
     async function generateHMAC(secret, message) {
       const encoder = new TextEncoder();
       const secretBuffer = encoder.encode(secret);
       const messageBuffer = encoder.encode(message);
       
-      // Import the secret key
       const key = await window.crypto.subtle.importKey(
         'raw',
         secretBuffer,
@@ -1570,38 +606,33 @@
         ['sign']
       );
       
-      // Sign the message
       const signature = await window.crypto.subtle.sign(
         'HMAC',
         key,
         messageBuffer
       );
       
-      // Convert to hex string
       return Array.from(new Uint8Array(signature))
         .map(b => b.toString(16).padStart(2, '0'))
         .join('');
     }
     
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize Thena only if settings have been configured
-      if (window.thena) {
-        console.log("Thena widget initialized");
-      }
-      
       // Widget Settings Modal functionality
       const modal = document.getElementById('widget-settings-modal');
       const settingsBtn = document.getElementById('widget-settings-btn');
       const closeModal = document.querySelector('.close-modal');
       const form = document.getElementById('widget-settings-form');
-      
+
       // Pre-fill form fields with current settings if they exist
       if (window.thenaWidget) {
         document.getElementById('agent-id').value = window.thenaWidget.agentId || '';
         document.getElementById('api-key').value = window.thenaWidget.apiKey || '';
         document.getElementById('base-url').value = window.thenaWidget.baseUrl || '';
         document.getElementById('ws-endpoint').value = window.thenaWidget.wsEndpoint || '';
-        document.getElementById('theme-color').value = window.thenaWidget.themeColor || '';
+        document.getElementById('theme-color-start').value = window.thenaWidget.themeColorStart || '';
+        document.getElementById('theme-color-end').value = window.thenaWidget.themeColorEnd || '';
+        document.getElementById('gradient-direction').value = window.thenaWidget.gradientDirection || 'to right';
         document.getElementById('brand-logo-url').value = window.thenaWidget.brandLogoUrl || '';
         
         if (window.thenaWidget.user) {
@@ -1619,30 +650,29 @@
       closeModal.addEventListener('click', function() {
         modal.style.display = 'none';
       });
-      
+
       // Close modal when clicking outside
       window.addEventListener('click', function(event) {
         if (event.target == modal) {
           modal.style.display = 'none';
         }
       });
-      
+
       // Handle theme preset button clicks
       document.querySelectorAll('.theme-preset').forEach(button => {
         button.addEventListener('click', function() {
-          const color = this.getAttribute('data-color');
+          const startColor = this.getAttribute('data-start');
+          const endColor = this.getAttribute('data-end');
+          const gradient = this.getAttribute('data-gradient');
           const logo = this.getAttribute('data-logo');
           
-          if (color) {
-            document.getElementById('theme-color').value = color;
-          }
-          
-          if (logo) {
-            document.getElementById('brand-logo-url').value = logo;
-          }
+          if (startColor) document.getElementById('theme-color-start').value = startColor;
+          if (endColor) document.getElementById('theme-color-end').value = endColor;
+          if (gradient) document.getElementById('gradient-direction').value = gradient;
+          if (logo) document.getElementById('brand-logo-url').value = logo;
         });
       });
-      
+
       // Auto-open settings modal if no settings configured
       if (!window.thenaWidget.agentId || !window.thenaWidget.apiKey) {
         setTimeout(() => {
@@ -1655,7 +685,6 @@
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Get form values
         const agentId = document.getElementById('agent-id').value.trim();
         const apiKey = document.getElementById('api-key').value.trim();
         const baseUrl = document.getElementById('base-url').value.trim();
@@ -1663,154 +692,74 @@
         const userEmail = document.getElementById('user-email').value.trim();
         const userName = document.getElementById('user-name').value.trim();
         const hmacSecret = document.getElementById('hmac-secret').value.trim();
-        const themeColor = document.getElementById('theme-color').value.trim();
+        const themeColorStart = document.getElementById('theme-color-start').value.trim();
+        const themeColorEnd = document.getElementById('theme-color-end').value.trim();
+        const gradientDirection = document.getElementById('gradient-direction').value.trim();
         const brandLogoUrl = document.getElementById('brand-logo-url').value.trim();
+
+        window.thenaWidget.agentId = agentId;
+        window.thenaWidget.apiKey = apiKey;
+        window.thenaWidget.baseUrl = baseUrl;
+        window.thenaWidget.wsEndpoint = wsEndpoint;
         
-        // Prepare the settings object
-        const currentConfig = {
-          agentId: agentId,
-          apiKey: apiKey,
-          baseUrl: baseUrl,
-          wsEndpoint: wsEndpoint,
-          user: undefined // Initialize user object
-        };
-
-        // Add theme color if provided
-        if (themeColor) {
-          currentConfig.themeColor = themeColor;
-          console.log('Setting theme color to:', themeColor);
+        if (themeColorStart) window.thenaWidget.themeColorStart = themeColorStart; else delete window.thenaWidget.themeColorStart;
+        if (themeColorEnd) window.thenaWidget.themeColorEnd = themeColorEnd; else delete window.thenaWidget.themeColorEnd;
+        if (gradientDirection) {
+          window.thenaWidget.gradientDirection = gradientDirection;
         } else {
-          // Remove theme color if empty (to use default)
-          delete currentConfig.themeColor;
-          console.log('Removing theme color, using default');
+          delete window.thenaWidget.gradientDirection;
         }
+        if (brandLogoUrl) window.thenaWidget.brandLogoUrl = brandLogoUrl; else delete window.thenaWidget.brandLogoUrl;
+        
+        // Settings for embedded mode
+        window.thenaWidget.useCustomLauncher = true;
+        window.thenaWidget.targetElementId = 'my-thena-widget';
 
-        // Add brand logo URL if provided
-        if (brandLogoUrl) {
-          currentConfig.brandLogoUrl = brandLogoUrl;
-          console.log('✅ Setting brand logo URL to:', brandLogoUrl);
-          
-          // Test if the URL is accessible
-          fetch(brandLogoUrl, { method: 'HEAD' })
-            .then(response => {
-              if (response.ok) {
-                console.log('✅ Brand logo URL is accessible:', response.status);
-              } else {
-                console.warn('⚠️ Brand logo URL returned status:', response.status);
-              }
-            })
-            .catch(error => {
-              console.error('❌ Brand logo URL test failed:', error);
-            });
-        } else {
-          // Remove brand logo URL if empty (to use default)
-          delete currentConfig.brandLogoUrl;
-          console.log('🔄 Removing brand logo URL, using default');
-        }
-
-        // If user authentication is provided
         if (userEmail && userName && hmacSecret) {
           const messagePayload = `${userEmail}:${userName}`;
           try {
             const hash = await generateHMAC(hmacSecret, messagePayload);
-            currentConfig.user = {
-              email: userEmail,
-              name: userName,
-              hash: hash
-            };
-            console.log("User authenticated with HMAC hash:", hash);
+            window.thenaWidget.user = { email: userEmail, name: userName, hash: hash };
           } catch (error) {
-            console.error("Error generating HMAC:", error);
             showToast("Error generating HMAC hash");
             return;
           }
-        } else if (userEmail || userName) {
-          currentConfig.user = {
-            email: userEmail,
-            name: userName
-          };
+        } else if (userEmail || userName) { 
+          window.thenaWidget.user = { email: userEmail, name: userName };
+        } else {
+          delete window.thenaWidget.user;
         }
-
-        // Update both window configuration objects
-        window.thenaWidget = { ...currentConfig }; 
-        window.thenaWidgetConfig = { ...currentConfig };
-
-        console.log("Updated window.thenaWidget:", window.thenaWidget);
-        console.log("Updated window.thenaWidgetConfig:", window.thenaWidgetConfig);
-
-        // Close the modal
+        
         modal.style.display = 'none';
-        
-        // Save settings to localStorage (will save window.thenaWidgetConfig)
-        saveWidgetSettings(); 
-        
-        // Show toast
+        saveWidgetSettings();
+        window.thenaWidgetConfig = { ...window.thenaWidget };
         showToast("Settings saved! Reloading widget...");
         
-        // The most reliable way to reset everything is to reload the page
-        // This ensures the widget is completely reinitialized with new settings
         setTimeout(() => {
           window.location.reload();
-        }, 1000);
+        }, 1000); 
       });
     });
   </script>
   
   <!-- Load the widget script conditionally -->
   <script>
-    // Check if we have the required settings before loading the widget script
-    // Check thenaWidgetConfig as it's the one we're saving/prioritizing
-    const hasValidSettings = window.thenaWidgetConfig && 
-                            window.thenaWidgetConfig.apiKey && 
-                            window.thenaWidgetConfig.agentId;
+    const hasValidSettings = window.thenaWidget && 
+                            window.thenaWidget.apiKey && 
+                            window.thenaWidget.agentId;
     
-    console.log('Checking for valid settings:', { 
-      hasConfig: !!window.thenaWidgetConfig, 
-      hasApiKey: !!window.thenaWidgetConfig?.apiKey, 
-      hasAgentId: !!window.thenaWidgetConfig?.agentId,
-      isValid: hasValidSettings 
-    });
-
-    // Only load the widget script if we have valid settings
     if (hasValidSettings) {
-      console.log('Valid settings found. Loading widget script (shim.js)...');
       const widgetScript = document.createElement('script');
       widgetScript.src = 'https://widget.thena.tools/shim.js';
       document.body.appendChild(widgetScript);
     } else {
-      // If we don't have valid settings, show our custom widget button
-      console.log('No valid widget settings found. Showing configuration widget button.');
-      document.addEventListener('DOMContentLoaded', showConfigurationWidget);
-      // Also call it now in case DOM is already loaded
-      if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        showConfigurationWidget();
-      }
-    }
-    
-    // Function to display our custom configuration widget button
-    function showConfigurationWidget() {
-      // Show the settings button
-      showSettingsButton();
-    }
-    
-    // Function to show floating settings button
-    function showSettingsButton() {
-      // Remove any existing button first
-      const existingBtn = document.getElementById('thena-settings-button');
-      if (existingBtn) existingBtn.remove();
-      
-      const btn = document.createElement('div');
-      btn.id = 'thena-settings-button';
-      btn.innerHTML = '<i class="fas fa-comment-dots"></i>';
-      document.body.appendChild(btn);
-      
-      btn.addEventListener('click', function() {
-        // DO NOT hide the button on click anymore
-        // btn.style.display = 'none'; 
-        
-        // Open settings modal
-        document.getElementById('widget-settings-modal').style.display = 'block';
-      });
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('widget-settings-modal');
+            if (modal) {
+                modal.style.display = 'block';
+                showToast("Please configure the widget settings to continue");
+            }
+        });
     }
   </script>
 </body>
