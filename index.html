@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexus | Div-based Widget Test</title>
+  <title>Nexus | Universal Widget Tester (Staging)</title>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,6 +29,9 @@
       --success: #10B981;
       --warning: #F59E0B;
       --danger: #EF4444;
+      
+      /* Add custom widget styles */
+      --widget-button-size: 56px;
       
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
@@ -215,67 +218,104 @@
       background-color: var(--primary-dark);
     }
     
-    .widget-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex: 1;
-        padding: 2rem;
+    .mode-switch-button {
+      background-color: var(--secondary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
+    
+    .mode-switch-button:hover {
+      background-color: #0891b2;
+    }
+    
+    .widget-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      padding: 2rem;
+    }
+    
     #my-thena-widget {
-        width: 380px;
-        height: 600px;
-        border-radius: 6px;
-        border: 1px solid var(--light-gray);
-        background-color: var(--white);
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
+      width: 380px;
+      height: 600px;
+      border-radius: 6px;
+      border: 1px solid var(--light-gray);
+      background-color: var(--white);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Ensure widget content stays within bounds - more specific selectors */
     #my-thena-widget > * {
-        max-width: 100% !important;
-        max-height: 100% !important;
-        box-sizing: border-box !important;
-        overflow: hidden !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
     }
 
     /* Target iframe specifically */
     #my-thena-widget iframe {
-        width: 100% !important;
-        height: 100% !important;
-        border: none !important;
-        border-radius: 6px !important;
-        display: block !important;
-        position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
-        transform: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      border-radius: 6px !important;
+      display: block !important;
+      position: relative !important;
+      top: 0 !important;
+      left: 0 !important;
+      transform: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
     /* Target any divs that might be created by the widget */
     #my-thena-widget > div {
-        width: 100% !important;
-        height: 100% !important;
-        position: relative !important;
-        overflow: hidden !important;
+      width: 100% !important;
+      height: 100% !important;
+      position: relative !important;
+      overflow: hidden !important;
     }
 
     /* Prevent any absolute positioning from breaking out */
     #my-thena-widget [style*="position: absolute"],
     #my-thena-widget [style*="position: fixed"] {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        transform: none !important;
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      transform: none !important;
     }
-
+    
+    /* Hide embedded container when in floating mode */
+    .floating-mode .widget-container {
+      display: none;
+    }
+    
+    /* Show floating mode message */
+    .floating-mode-message {
+      display: none;
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--gray);
+    }
+    
+    .floating-mode .floating-mode-message {
+      display: block;
+    }
+    
     /* Toast notification */
     .toast {
       position: fixed;
@@ -297,8 +337,33 @@
       opacity: 1;
       transform: translate(-50%, -10px);
     }
+
+    /* Widget button styles for floating mode */
+    #thena-settings-button {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: var(--widget-button-size);
+      height: var(--widget-button-size);
+      border-radius: 5%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.25);
+      z-index: 999;
+      font-size: 24px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
     
-    /* Modal Styles for Widget Settings - Added from Thena file */
+    #thena-settings-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(67, 97, 238, 0.3);
+    }
+
+    /* Modal Styles for Widget Settings */
     .modal {
       display: none;
       position: fixed;
@@ -314,13 +379,15 @@
     
     .modal-content {
       background-color: white;
-      margin: 80px auto;
+      margin: 40px auto;
       padding: 24px;
       border-radius: 8px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      max-width: 480px;
+      max-width: 520px;
       width: 90%;
       position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
     }
     
     .close-modal {
@@ -404,6 +471,36 @@
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
+    
+    /* API Test Button Styles */
+    .api-test-btn {
+      background: none !important;
+      border: none !important;
+      cursor: pointer !important;
+      text-align: left !important;
+      width: 100% !important;
+      transition: var(--transition) !important;
+    }
+    
+    .api-test-btn:hover {
+      background-color: var(--lighter-gray) !important;
+      color: var(--primary) !important;
+    }
+    
+    .api-test-btn:active {
+      background-color: var(--light-gray) !important;
+    }
+    
+    /* Current Mode Indicator */
+    .current-mode {
+      background-color: rgba(67, 97, 238, 0.1);
+      color: var(--primary);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -418,15 +515,65 @@
       </div>
       
       <div class="nav-section">
-        <div class="nav-section-title">Overview</div>
-        <a href="dashboard-2.html" class="nav-item">
+        <div class="nav-section-title">Widget Mode</div>
+        <button class="nav-item api-test-btn" id="switch-to-floating">
+          <i class="nav-icon fas fa-window-restore"></i>
+          Switch to Floating Mode
+        </button>
+        <button class="nav-item api-test-btn" id="switch-to-embedded">
           <i class="nav-icon fas fa-th-large"></i>
-          Floating Widget
+          Switch to Embedded Mode
+        </button>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Widget API Testing</div>
+        <button class="nav-item api-test-btn" id="test-open">
+          <i class="nav-icon fas fa-external-link-alt"></i>
+          Open Widget
+        </button>
+        <button class="nav-item api-test-btn" id="test-close">
+          <i class="nav-icon fas fa-times"></i>
+          Close Widget
+        </button>
+        <button class="nav-item api-test-btn" id="test-toggle">
+          <i class="nav-icon fas fa-exchange-alt"></i>
+          Toggle Widget
+        </button>
+        <button class="nav-item api-test-btn" id="test-toggle-dark">
+          <i class="nav-icon fas fa-moon"></i>
+          Toggle Dark Mode
+        </button>
+        <button class="nav-item api-test-btn" id="test-toggle-visibility">
+          <i class="nav-icon fas fa-eye-slash"></i>
+          Toggle Visibility
+        </button>
+        <button class="nav-item api-test-btn" id="custom-launcher-btn" style="display: none;">
+          <i class="nav-icon fas fa-comment-dots"></i>
+          Custom Launcher
+        </button>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Account</div>
+        <a href="#" class="nav-item">
+          <i class="nav-icon fas fa-cog"></i>
+          Settings
         </a>
-        <a href="dashboard-element.html" class="nav-item active">
-            <i class="nav-icon fas fa-th-large"></i>
-            Embedded Widget
-          </a>
+        <a href="#" class="nav-item">
+          <i class="nav-icon fas fa-question-circle"></i>
+          Help
+        </a>
+      </div>
+    </div>
+    
+    <div class="sidebar-bottom">
+      <div class="user-menu">
+        <div class="user-avatar" style="background-image: url('https://randomuser.me/api/portraits/men/32.jpg'); background-size: cover; width: 32px; height: 32px; border-radius: 50%; margin-right: 0.75rem;"></div>
+        <div class="user-info">
+          <div class="user-name" style="font-weight: 500; font-size: 0.875rem;">Alex Rivera</div>
+          <div class="user-role" style="font-size: 0.75rem; color: var(--gray);">Admin</div>
+        </div>
       </div>
     </div>
   </aside>
@@ -434,7 +581,7 @@
   <!-- Main Content -->
   <main class="main-content">
     <header class="header">
-      <h1 class="page-title">Embedded Widget Test</h1>
+      <h1 class="page-title">Universal Widget Tester <span id="current-mode-indicator" class="current-mode">Embedded Mode</span></h1>
       
       <div class="header-actions">
         <button class="setup-button" id="widget-settings-btn">
@@ -444,8 +591,16 @@
       </div>
     </header>
     
+    <!-- Embedded Mode Container -->
     <div class="widget-container">
-        <div id="my-thena-widget"></div>
+      <div id="my-thena-widget"></div>
+    </div>
+    
+    <!-- Floating Mode Message -->
+    <div class="floating-mode-message">
+      <h2>Floating Mode Active</h2>
+      <p>The widget is now running in floating mode. Look for the floating chat button on the bottom-right corner of the screen.</p>
+      <p>Use the API testing buttons in the sidebar to interact with the floating widget.</p>
     </div>
   </main>
   
@@ -484,57 +639,127 @@
           <input type="text" id="hmac-secret" placeholder="Enter HMAC secret">
         </div>
         <div class="form-group">
-            <label for="theme-color-start">Theme Color Start (hex code)</label>
-            <input type="text" id="theme-color-start" placeholder="e.g., #ff6b35" pattern="^#[A-Fa-f0-9]{6}$">
-            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
-              Starting color for gradient theme. Leave empty for default.
-            </small>
+          <label>
+            <input type="checkbox" id="use-custom-launcher" style="margin-right: 8px;">
+            Use Custom Launcher Button
+          </label>
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            When enabled, the default floating button is hidden and you can use the API hooks to control the widget.
+          </small>
         </div>
         <div class="form-group">
-            <label for="theme-color-end">Theme Color End (hex code)</label>
-            <input type="text" id="theme-color-end" placeholder="e.g., #0000ff" pattern="^#[A-Fa-f0-9]{6}$">
-            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
-              Ending color for gradient theme. Leave empty for default.
-            </small>
+          <label>
+            <input type="checkbox" id="initial-dark-mode" style="margin-right: 8px;">
+            Initial Dark Mode
+          </label>
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            Start the widget in dark mode by default.
+          </small>
         </div>
         <div class="form-group">
-            <label for="gradient-direction">Gradient Direction</label>
-            <input type="text" id="gradient-direction" placeholder="e.g., to right, 45deg" value="to right">
-            <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
-              <button type="button" class="theme-preset" data-gradient="to right" style="background: linear-gradient(to right, #4361ee, #38bdf8);">Right</button>
-              <button type="button" class="theme-preset" data-gradient="to bottom" style="background: linear-gradient(to bottom, #4361ee, #38bdf8);">Down</button>
-              <button type="button" class="theme-preset" data-gradient="45deg" style="background: linear-gradient(45deg, #4361ee, #38bdf8);">45°</button>
-              <button type="button" class="theme-preset" data-gradient="135deg" style="background: linear-gradient(135deg, #4361ee, #38bdf8);">135°</button>
+          <label>
+            <input type="checkbox" id="auto-close-widget" style="margin-right: 8px;">
+            Auto-close widget on outside click
+          </label>
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            Automatically close the widget when clicking outside of it. (Only applies to floating mode)
+          </small>
+        </div>
+        <div class="form-group">
+          <label>Notification Settings</label>
+          <div style="margin-top: 8px;">
+            <label style="display: flex; align-items: center; margin-bottom: 8px;">
+              <input type="checkbox" id="notifications-enabled" style="margin-right: 8px;" checked>
+              Enable notifications
+            </label>
+            <label style="display: flex; align-items: center;">
+              <input type="checkbox" id="notifications-sound" style="margin-right: 8px;">
+              Enable notification sounds
+            </label>
+          </div>
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            Control notification system behavior. When enabled, you'll see badge counts and visual indicators for unread messages.
+          </small>
+        </div>
+        <div class="form-group">
+          <label>Initial Position (Floating)</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+            <div>
+              <label for="position-top" style="font-size: 12px; margin-bottom: 4px; display: block;">Top (e.g., 20px, auto)</label>
+              <input type="text" id="position-top" placeholder="auto" style="width: 100%;">
             </div>
-            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
-              CSS gradient direction (e.g., "to right", "45deg"). Default is "to right".
-            </small>
+            <div>
+              <label for="position-left" style="font-size: 12px; margin-bottom: 4px; display: block;">Left (e.g., 20px, auto)</label>
+              <input type="text" id="position-left" placeholder="auto" style="width: 100%;">
+            </div>
+            <div>
+              <label for="position-bottom" style="font-size: 12px; margin-bottom: 4px; display: block;">Bottom (e.g., 20px, auto)</label>
+              <input type="text" id="position-bottom" placeholder="20px" style="width: 100%;">
+            </div>
+            <div>
+              <label for="position-right" style="font-size: 12px; margin-bottom: 4px; display: block;">Right (e.g., 20px, auto)</label>
+              <input type="text" id="position-right" placeholder="20px" style="width: 100%;">
+            </div>
+          </div>
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            Control where the floating widget appears. Use CSS values like "20px", "auto", "50%", etc. Default is bottom-right (bottom: 20px, right: 20px).
+          </small>
         </div>
         <div class="form-group">
-            <label>Theme Presets</label>
-            <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
-              <button type="button" class="theme-preset" data-start="#4361ee" data-end="#38bdf8" style="background: linear-gradient(to right, #4361ee, #38bdf8);">Blue Ocean</button>
-              <button type="button" class="theme-preset" data-start="#ff6b35" data-end="#f7931e" style="background: linear-gradient(to right, #ff6b35, #f7931e);">Orange Sunset</button>
-              <button type="button" class="theme-preset" data-start="#10b981" data-end="#059669" style="background: linear-gradient(to right, #10b981, #059669);">Green Forest</button>
-              <button type="button" class="theme-preset" data-start="#8b5cf6" data-end="#a855f7" style="background: linear-gradient(to right, #8b5cf6, #a855f7);">Purple Magic</button>
-              <button type="button" class="theme-preset" data-start="#f59e0b" data-end="#d97706" style="background: linear-gradient(to right, #f59e0b, #d97706);">Golden Hour</button>
-              <button type="button" class="theme-preset" data-start="#ef4444" data-end="#dc2626" style="background: linear-gradient(to right, #ef4444, #dc2626);">Red Fire</button>
-            </div>
-            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
-              Click a preset to apply gradient colors. You can then customize individual colors and direction above.
-            </small>
+          <label for="theme-color-start">Theme Color Start (hex code)</label>
+          <input type="text" id="theme-color-start" placeholder="e.g., #ff6b35" pattern="^#[A-Fa-f0-9]{6}$">
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            Starting color for gradient theme. Leave empty for default.
+          </small>
         </div>
         <div class="form-group">
-            <label for="brand-logo-url">Brand Logo URL</label>
-            <input type="url" id="brand-logo-url" placeholder="e.g., https://example.com/logo.png">
-            <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
-              <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/0/02/SVG_logo.svg" style="background: #4361ee;">SVG</button>
-              <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/64px-React-icon.svg.png" style="background: #ff6b35;">PNG</button>
-              <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/64px-Python-logo-notext.svg.jpg" style="background: #10b981;">JPG</button>
-            </div>
-            <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
-              Enter a public URL to your brand logo (supports SVG, PNG, JPG). Leave empty to use default.
-            </small>
+          <label for="theme-color-end">Theme Color End (hex code)</label>
+          <input type="text" id="theme-color-end" placeholder="e.g., #0000ff" pattern="^#[A-Fa-f0-9]{6}$">
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            Ending color for gradient theme. Leave empty for default.
+          </small>
+        </div>
+        <div class="form-group">
+          <label for="gradient-direction">Gradient Direction</label>
+          <input type="text" id="gradient-direction" placeholder="e.g., to right, 45deg" value="to right">
+          <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+            <button type="button" class="theme-preset" data-gradient="to right" style="background: linear-gradient(to right, #4361ee, #38bdf8);">Right</button>
+            <button type="button" class="theme-preset" data-gradient="to bottom" style="background: linear-gradient(to bottom, #4361ee, #38bdf8);">Down</button>
+            <button type="button" class="theme-preset" data-gradient="45deg" style="background: linear-gradient(45deg, #4361ee, #38bdf8);">45°</button>
+            <button type="button" class="theme-preset" data-gradient="135deg" style="background: linear-gradient(135deg, #4361ee, #38bdf8);">135°</button>
+          </div>
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            CSS gradient direction (e.g., "to right", "45deg"). Default is "to right".
+          </small>
+        </div>
+        <div class="form-group">
+          <label>Theme Presets</label>
+          <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+            <button type="button" class="theme-preset" data-start="#4361ee" data-end="#38bdf8" style="background: linear-gradient(to right, #4361ee, #38bdf8);">Blue Ocean</button>
+            <button type="button" class="theme-preset" data-start="#ff6b35" data-end="#f7931e" style="background: linear-gradient(to right, #ff6b35, #f7931e);">Orange Sunset</button>
+            <button type="button" class="theme-preset" data-start="#10b981" data-end="#059669" style="background: linear-gradient(to right, #10b981, #059669);">Green Forest</button>
+            <button type="button" class="theme-preset" data-start="#8b5cf6" data-end="#a855f7" style="background: linear-gradient(to right, #8b5cf6, #a855f7);">Purple Magic</button>
+            <button type="button" class="theme-preset" data-start="#f59e0b" data-end="#d97706" style="background: linear-gradient(to right, #f59e0b, #d97706);">Golden Hour</button>
+            <button type="button" class="theme-preset" data-start="#ef4444" data-end="#dc2626" style="background: linear-gradient(to right, #ef4444, #dc2626);">Red Fire</button>
+          </div>
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            Click a preset to apply gradient colors. You can then customize individual colors and direction above.
+          </small>
+        </div>
+        <div class="form-group">
+          <label for="brand-logo-url">Brand Logo URL</label>
+          <input type="url" id="brand-logo-url" placeholder="e.g., https://example.com/logo.png">
+          <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/0/02/SVG_logo.svg" style="background: #4361ee;">SVG</button>
+            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/64px-React-icon.svg.png" style="background: #ff6b35;">PNG</button>
+            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/64px-Python-logo-notext.svg.jpg" style="background: #10b981;">JPG</button>
+            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/64px-HTML5_logo_and_wordmark.svg.png" style="background: #f59e0b;">JPEG</button>
+            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/CSS3_logo_and_wordmark.svg/64px-CSS3_logo_and_wordmark.svg.webp" style="background: #8b5cf6;">WebP</button>
+            <button type="button" class="theme-preset" data-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Typescript_logo_2020.svg/48px-Typescript_logo_2020.svg.png" style="background: #61dafb;">Small PNG</button>
+          </div>
+          <small style="color: #6B7280; font-size: 12px; margin-top: 4px; display: block;">
+            Enter a public URL to your brand logo (supports SVG, PNG, JPG, JPEG, WebP). Leave empty to use default Thena logo.
+          </small>
         </div>
         <div class="modal-buttons">
           <button type="submit" class="setup-button">Save settings</button>
@@ -543,7 +768,8 @@
     </div>
   </div>
 
-  <!-- Thena Web Chat Widget Container is now part of main content -->
+  <!-- Thena Web Chat Widget Container -->
+  <div id="thena-widget-container"></div>
 
   <script>
     // Define widget configuration as a global variable so it persists across reloads
@@ -551,20 +777,34 @@
       // No default values - will be set by user through settings
     };
     
+    // Current mode state (true = embedded, false = floating)
+    let isEmbeddedMode = true;
+    
     // Function to save widget settings to localStorage to persist across page reloads
     function saveWidgetSettings() {
-      localStorage.setItem('thenaWidgetSettings_element', JSON.stringify(window.thenaWidget));
+      const settings = {
+        ...window.thenaWidget,
+        currentMode: isEmbeddedMode ? 'embedded' : 'floating'
+      };
+      localStorage.setItem('thenaWidgetSettings_staging', JSON.stringify(settings));
     }
 
     // Function to load widget settings from localStorage
     function loadWidgetSettings() {
-      const savedSettings = localStorage.getItem('thenaWidgetSettings_element');
+      const savedSettings = localStorage.getItem('thenaWidgetSettings_staging');
       if (savedSettings) {
         try {
           const settings = JSON.parse(savedSettings);
+          // Extract mode
+          if (settings.currentMode) {
+            isEmbeddedMode = settings.currentMode === 'embedded';
+            delete settings.currentMode; // Remove from widget config
+          }
           window.thenaWidget = settings;
           // IMPORTANT: Also set window.thenaWidgetConfig which is what the widget actually uses
           window.thenaWidgetConfig = { ...settings };
+          console.log('Loaded saved widget settings:', settings);
+          console.log('Set window.thenaWidgetConfig to:', window.thenaWidgetConfig);
         } catch (e) {
           console.error('Error loading saved widget settings:', e);
         }
@@ -574,6 +814,47 @@
     // Load settings on page load
     loadWidgetSettings();
     
+    // Function to update mode display
+    function updateModeDisplay() {
+      const body = document.body;
+      const modeIndicator = document.getElementById('current-mode-indicator');
+      
+      if (isEmbeddedMode) {
+        body.classList.remove('floating-mode');
+        modeIndicator.textContent = 'Embedded Mode';
+      } else {
+        body.classList.add('floating-mode');
+        modeIndicator.textContent = 'Floating Mode';
+      }
+    }
+    
+    // Function to switch widget mode
+    function switchWidgetMode(embedded) {
+      isEmbeddedMode = embedded;
+      
+      // Update widget configuration
+      if (isEmbeddedMode) {
+        window.thenaWidget.useCustomLauncher = true;
+        window.thenaWidget.targetElementId = 'my-thena-widget';
+      } else {
+        window.thenaWidget.useCustomLauncher = window.thenaWidget.useCustomLauncher || false;
+        delete window.thenaWidget.targetElementId;
+      }
+      
+      // Update display
+      updateModeDisplay();
+      
+      // Save settings and reload
+      saveWidgetSettings();
+      window.thenaWidgetConfig = { ...window.thenaWidget };
+      
+      showToast(`Switched to ${isEmbeddedMode ? 'Embedded' : 'Floating'} Mode. Reloading widget...`);
+      
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    
     // Show toast notification
     function showToast(message) {
       let toast = document.createElement('div');
@@ -581,6 +862,7 @@
       toast.textContent = message;
       document.body.appendChild(toast);
       
+      // Trigger reflow to enable transition
       void toast.offsetWidth;
       toast.classList.add('show');
       
@@ -598,6 +880,7 @@
       const secretBuffer = encoder.encode(secret);
       const messageBuffer = encoder.encode(message);
       
+      // Import the secret key
       const key = await window.crypto.subtle.importKey(
         'raw',
         secretBuffer,
@@ -606,18 +889,28 @@
         ['sign']
       );
       
+      // Sign the message
       const signature = await window.crypto.subtle.sign(
         'HMAC',
         key,
         messageBuffer
       );
       
+      // Convert to hex string
       return Array.from(new Uint8Array(signature))
         .map(b => b.toString(16).padStart(2, '0'))
         .join('');
     }
     
     document.addEventListener('DOMContentLoaded', function() {
+      // Initialize mode display
+      updateModeDisplay();
+      
+      // Initialize Thena only if settings have been configured
+      if (window.thena) {
+        console.log("Thena widget initialized");
+      }
+      
       // Widget Settings Modal functionality
       const modal = document.getElementById('widget-settings-modal');
       const settingsBtn = document.getElementById('widget-settings-btn');
@@ -628,18 +921,56 @@
       if (window.thenaWidget) {
         document.getElementById('agent-id').value = window.thenaWidget.agentId || '';
         document.getElementById('api-key').value = window.thenaWidget.apiKey || '';
-        document.getElementById('base-url').value = window.thenaWidget.baseUrl || '';
-        document.getElementById('ws-endpoint').value = window.thenaWidget.wsEndpoint || '';
+        document.getElementById('base-url').value = window.thenaWidget.baseUrl || 'https://thena-agent-studio.thena.tools';
+        document.getElementById('ws-endpoint').value = window.thenaWidget.wsEndpoint || 'wss://thena-agent-studio.thena.tools';
         document.getElementById('theme-color-start').value = window.thenaWidget.themeColorStart || '';
         document.getElementById('theme-color-end').value = window.thenaWidget.themeColorEnd || '';
         document.getElementById('gradient-direction').value = window.thenaWidget.gradientDirection || 'to right';
         document.getElementById('brand-logo-url').value = window.thenaWidget.brandLogoUrl || '';
         
+        // Set boolean checkboxes
+        document.getElementById('use-custom-launcher').checked = window.thenaWidget.useCustomLauncher || false;
+        document.getElementById('initial-dark-mode').checked = window.thenaWidget.darkMode || false;
+        document.getElementById('auto-close-widget').checked = window.thenaWidget.autoclose || false;
+        
+        // Set notification settings
+        if (window.thenaWidget.notifications) {
+          document.getElementById('notifications-enabled').checked = window.thenaWidget.notifications.enabled !== false;
+          document.getElementById('notifications-sound').checked = window.thenaWidget.notifications.sound === true;
+        } else {
+          document.getElementById('notifications-enabled').checked = true; // Default enabled
+          document.getElementById('notifications-sound').checked = false; // Default no sound
+        }
+        
+        // Set position fields
+        if (window.thenaWidget.initialPosition) {
+          document.getElementById('position-top').value = window.thenaWidget.initialPosition.top || '';
+          document.getElementById('position-left').value = window.thenaWidget.initialPosition.left || '';
+          document.getElementById('position-bottom').value = window.thenaWidget.initialPosition.bottom || '';
+          document.getElementById('position-right').value = window.thenaWidget.initialPosition.right || '';
+        }
+        
         if (window.thenaWidget.user) {
           document.getElementById('user-email').value = window.thenaWidget.user.email || '';
           document.getElementById('user-name').value = window.thenaWidget.user.name || '';
         }
+        
+        // Show/hide custom launcher button based on settings
+        updateCustomLauncherVisibility();
+      } else {
+        // Set default values when no saved settings exist
+        document.getElementById('base-url').value = 'https://thena-agent-studio.thena.tools';
+        document.getElementById('ws-endpoint').value = 'wss://thena-agent-studio.thena.tools';
       }
+      
+      // Mode switch button event listeners
+      document.getElementById('switch-to-floating').addEventListener('click', function() {
+        switchWidgetMode(false); // Switch to floating
+      });
+      
+      document.getElementById('switch-to-embedded').addEventListener('click', function() {
+        switchWidgetMode(true); // Switch to embedded
+      });
       
       // Open modal when settings button is clicked
       settingsBtn.addEventListener('click', function() {
@@ -666,11 +997,93 @@
           const gradient = this.getAttribute('data-gradient');
           const logo = this.getAttribute('data-logo');
           
-          if (startColor) document.getElementById('theme-color-start').value = startColor;
-          if (endColor) document.getElementById('theme-color-end').value = endColor;
-          if (gradient) document.getElementById('gradient-direction').value = gradient;
-          if (logo) document.getElementById('brand-logo-url').value = logo;
+          if (startColor) {
+            document.getElementById('theme-color-start').value = startColor;
+          }
+          
+          if (endColor) {
+            document.getElementById('theme-color-end').value = endColor;
+          }
+          
+          if (gradient) {
+            document.getElementById('gradient-direction').value = gradient;
+          }
+          
+          if (logo) {
+            document.getElementById('brand-logo-url').value = logo;
+          }
         });
+      });
+
+      // Function to update custom launcher button visibility
+      function updateCustomLauncherVisibility() {
+        const customLauncherBtn = document.getElementById('custom-launcher-btn');
+        const useCustomLauncher = document.getElementById('use-custom-launcher').checked;
+        
+        if (useCustomLauncher && !isEmbeddedMode) {
+          customLauncherBtn.style.display = 'block';
+        } else {
+          customLauncherBtn.style.display = 'none';
+        }
+      }
+      
+      // Listen for changes to the custom launcher checkbox
+      document.getElementById('use-custom-launcher').addEventListener('change', updateCustomLauncherVisibility);
+      
+      // API Testing Button Event Listeners
+      document.getElementById('test-open').addEventListener('click', function() {
+        if (window.thena && window.thena.open) {
+          window.thena.open();
+          showToast('Called window.thena.open()');
+        } else {
+          showToast('Widget not loaded or API not available');
+        }
+      });
+      
+      document.getElementById('test-close').addEventListener('click', function() {
+        if (window.thena && window.thena.close) {
+          window.thena.close();
+          showToast('Called window.thena.close()');
+        } else {
+          showToast('Widget not loaded or API not available');
+        }
+      });
+      
+      document.getElementById('test-toggle').addEventListener('click', function() {
+        if (window.thena && window.thena.toggle) {
+          window.thena.toggle();
+          showToast('Called window.thena.toggle()');
+        } else {
+          showToast('Widget not loaded or API not available');
+        }
+      });
+      
+      document.getElementById('test-toggle-dark').addEventListener('click', function() {
+        if (window.thena && window.thena.toggleDarkMode) {
+          window.thena.toggleDarkMode();
+          showToast('Called window.thena.toggleDarkMode()');
+        } else {
+          showToast('Widget not loaded or API not available');
+        }
+      });
+      
+      document.getElementById('test-toggle-visibility').addEventListener('click', function() {
+        if (window.thena && window.thena.toggleVisibility) {
+          window.thena.toggleVisibility();
+          showToast('Called window.thena.toggleVisibility()');
+        } else {
+          showToast('Widget not loaded or API not available');
+        }
+      });
+      
+      // Custom launcher button - acts as your custom trigger
+      document.getElementById('custom-launcher-btn').addEventListener('click', function() {
+        if (window.thena && window.thena.toggle) {
+          window.thena.toggle();
+          showToast('Custom launcher clicked - toggled widget');
+        } else {
+          showToast('Widget not loaded or API not available');
+        }
       });
 
       // Auto-open settings modal if no settings configured
@@ -685,6 +1098,7 @@
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        // Get form values
         const agentId = document.getElementById('agent-id').value.trim();
         const apiKey = document.getElementById('api-key').value.trim();
         const baseUrl = document.getElementById('base-url').value.trim();
@@ -696,45 +1110,166 @@
         const themeColorEnd = document.getElementById('theme-color-end').value.trim();
         const gradientDirection = document.getElementById('gradient-direction').value.trim();
         const brandLogoUrl = document.getElementById('brand-logo-url').value.trim();
+        
+        // Get boolean settings
+        const useCustomLauncher = document.getElementById('use-custom-launcher').checked;
+        const initialDarkMode = document.getElementById('initial-dark-mode').checked;
+        const autoCloseWidget = document.getElementById('auto-close-widget').checked;
+        
+        // Get notification settings
+        const notificationsEnabled = document.getElementById('notifications-enabled').checked;
+        const notificationsSound = document.getElementById('notifications-sound').checked;
+        
+        // Get position settings
+        const positionTop = document.getElementById('position-top').value.trim();
+        const positionLeft = document.getElementById('position-left').value.trim();
+        const positionBottom = document.getElementById('position-bottom').value.trim();
+        const positionRight = document.getElementById('position-right').value.trim();
 
+        // Update thenaWidget configuration
         window.thenaWidget.agentId = agentId;
         window.thenaWidget.apiKey = apiKey;
         window.thenaWidget.baseUrl = baseUrl;
         window.thenaWidget.wsEndpoint = wsEndpoint;
         
-        if (themeColorStart) window.thenaWidget.themeColorStart = themeColorStart; else delete window.thenaWidget.themeColorStart;
-        if (themeColorEnd) window.thenaWidget.themeColorEnd = themeColorEnd; else delete window.thenaWidget.themeColorEnd;
+        // Set boolean configurations based on current mode
+        if (isEmbeddedMode) {
+          // Force custom launcher for embedded mode
+          window.thenaWidget.useCustomLauncher = true;
+          window.thenaWidget.targetElementId = 'my-thena-widget';
+        } else {
+          // Use user setting for floating mode
+          window.thenaWidget.useCustomLauncher = useCustomLauncher;
+          delete window.thenaWidget.targetElementId;
+        }
+        
+        window.thenaWidget.darkMode = initialDarkMode;
+        window.thenaWidget.autoclose = autoCloseWidget;
+        
+        // Set notification configurations
+        window.thenaWidget.notifications = {
+          enabled: notificationsEnabled,
+          sound: notificationsSound
+        };
+        
+        // Set position configuration
+        const hasAnyPosition = positionTop || positionLeft || positionBottom || positionRight;
+        if (hasAnyPosition) {
+          window.thenaWidget.initialPosition = {};
+          if (positionTop) window.thenaWidget.initialPosition.top = positionTop;
+          if (positionLeft) window.thenaWidget.initialPosition.left = positionLeft;
+          if (positionBottom) window.thenaWidget.initialPosition.bottom = positionBottom;
+          if (positionRight) window.thenaWidget.initialPosition.right = positionRight;
+          console.log('Setting initial position to:', window.thenaWidget.initialPosition);
+        } else {
+          // Remove initialPosition if all fields are empty (use default positioning)
+          delete window.thenaWidget.initialPosition;
+          console.log('Removing initial position, using default');
+        }
+        
+        // Add theme configuration if provided
+        if (themeColorStart) {
+          window.thenaWidget.themeColorStart = themeColorStart;
+          console.log('Setting theme color start to:', themeColorStart);
+        } else {
+          // Remove theme color start if empty (to use default)
+          delete window.thenaWidget.themeColorStart;
+          console.log('Removing theme color start, using default');
+        }
+        
+        if (themeColorEnd) {
+          window.thenaWidget.themeColorEnd = themeColorEnd;
+          console.log('Setting theme color end to:', themeColorEnd);
+        } else {
+          // Remove theme color end if empty (to use default)
+          delete window.thenaWidget.themeColorEnd;
+          console.log('Removing theme color end, using default');
+        }
+        
         if (gradientDirection) {
           window.thenaWidget.gradientDirection = gradientDirection;
+          console.log('Setting gradient direction to:', gradientDirection);
         } else {
-          delete window.thenaWidget.gradientDirection;
+          // Set default gradient direction
+          window.thenaWidget.gradientDirection = 'to right';
+          console.log('Setting gradient direction to default: to right');
         }
-        if (brandLogoUrl) window.thenaWidget.brandLogoUrl = brandLogoUrl; else delete window.thenaWidget.brandLogoUrl;
         
-        // Settings for embedded mode
-        window.thenaWidget.useCustomLauncher = true;
-        window.thenaWidget.targetElementId = 'my-thena-widget';
-
+        // Add brand logo URL if provided
+        if (brandLogoUrl) {
+          window.thenaWidget.brandLogoUrl = brandLogoUrl;
+          console.log('✅ Setting brand logo URL to:', brandLogoUrl);
+          
+          // Test if the URL is accessible
+          fetch(brandLogoUrl, { method: 'HEAD' })
+            .then(response => {
+              if (response.ok) {
+                console.log('✅ Brand logo URL is accessible:', response.status);
+              } else {
+                console.warn('⚠️ Brand logo URL returned status:', response.status);
+              }
+            })
+            .catch(error => {
+              console.error('❌ Brand logo URL test failed:', error);
+            });
+        } else {
+          // Remove brand logo URL if empty (to use default)
+          delete window.thenaWidget.brandLogoUrl;
+          console.log('🔄 Removing brand logo URL, using default');
+        }
+        
+        // If user authentication is provided
         if (userEmail && userName && hmacSecret) {
+          // Create message payload for HMAC (email:name)
           const messagePayload = `${userEmail}:${userName}`;
+          
           try {
+            // Generate HMAC hash
             const hash = await generateHMAC(hmacSecret, messagePayload);
-            window.thenaWidget.user = { email: userEmail, name: userName, hash: hash };
+            
+            // Set user details with hash
+            window.thenaWidget.user = {
+              email: userEmail,
+              name: userName,
+              hash: hash
+            };
+            
+            console.log("User authenticated with HMAC hash:", hash);
           } catch (error) {
+            console.error("Error generating HMAC:", error);
             showToast("Error generating HMAC hash");
             return;
           }
         } else if (userEmail || userName) { 
-          window.thenaWidget.user = { email: userEmail, name: userName };
+          // Set user details without hash (anonymous)
+          window.thenaWidget.user = {
+            email: userEmail,
+            name: userName
+          };
         } else {
+          // Both email and name are empty, remove user object
           delete window.thenaWidget.user;
+          console.log('User fields are empty, removing user object');
         }
         
+        // Close the modal
         modal.style.display = 'none';
+        
+        // Save settings to localStorage
         saveWidgetSettings();
+        
+        // IMPORTANT: Also set window.thenaWidgetConfig which is what the widget actually uses
         window.thenaWidgetConfig = { ...window.thenaWidget };
+        
+        // Debug: Show final configuration
+        console.log('Final window.thenaWidget configuration before save:', JSON.stringify(window.thenaWidget, null, 2));
+        console.log('Setting window.thenaWidgetConfig to:', JSON.stringify(window.thenaWidgetConfig, null, 2));
+        
+        // Show toast
         showToast("Settings saved! Reloading widget...");
         
+        // The most reliable way to reset everything is to reload the page
+        // This ensures the widget is completely reinitialized with new settings
         setTimeout(() => {
           window.location.reload();
         }, 1000); 
@@ -744,22 +1279,49 @@
   
   <!-- Load the widget script conditionally -->
   <script>
+    // Check if we have the required settings before loading the widget script
     const hasValidSettings = window.thenaWidget && 
                             window.thenaWidget.apiKey && 
                             window.thenaWidget.agentId;
     
+    // Only load the widget script if we have valid settings
     if (hasValidSettings) {
       const widgetScript = document.createElement('script');
       widgetScript.src = 'https://widget.thena.tools/shim.js';
       document.body.appendChild(widgetScript);
     } else {
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('widget-settings-modal');
-            if (modal) {
-                modal.style.display = 'block';
-                showToast("Please configure the widget settings to continue");
-            }
-        });
+      // If we don't have valid settings, show our custom widget button
+      console.log('No valid widget settings found. Showing configuration widget button.');
+      document.addEventListener('DOMContentLoaded', showConfigurationWidget);
+      // Also call it now in case DOM is already loaded
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        showConfigurationWidget();
+      }
+    }
+    
+    // Function to display our custom configuration widget button
+    function showConfigurationWidget() {
+      // Show the settings button only in floating mode when no valid settings
+      if (!isEmbeddedMode) {
+        showSettingsButton();
+      }
+    }
+    
+    // Function to show floating settings button
+    function showSettingsButton() {
+      // Remove any existing button first
+      const existingBtn = document.getElementById('thena-settings-button');
+      if (existingBtn) existingBtn.remove();
+      
+      const btn = document.createElement('div');
+      btn.id = 'thena-settings-button';
+      btn.innerHTML = '<i class="fas fa-comment-dots"></i>';
+      document.body.appendChild(btn);
+      
+      btn.addEventListener('click', function() {
+        // Open settings modal
+        document.getElementById('widget-settings-modal').style.display = 'block';
+      });
     }
   </script>
 </body>
